@@ -1,0 +1,15 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Local credentials of the development bridge (bridge/dev.sh), never commit
+.dev-credentials
+# Go build and test leftovers
+/bridge/bin/
+/bridge/test/out/
+*.test
+*.out

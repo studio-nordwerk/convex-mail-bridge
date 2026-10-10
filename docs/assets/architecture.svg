@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1b1c19"/></marker>
+  </defs>
+  <rect width="1600" height="900" fill="#f8f7f3"/>
+  <text x="60" y="110" font-size="46" font-weight="700" fill="#1b1c19">IMAP without a mail server</text>
+  <text x="60" y="160" font-size="24" fill="#666a60">A stateless bridge translates IMAP and SMTP into HTTP calls to the app backend.</text>
+
+  <g fill="#ffffff" stroke="#1b1c19" stroke-width="2">
+    <rect x="60" y="340" width="280" height="130" rx="14"/>
+    <rect x="440" y="340" width="280" height="130" rx="14"/>
+    <rect x="1210" y="340" width="330" height="130" rx="14"/>
+    <rect x="1170" y="650" width="180" height="100" rx="14" stroke-dasharray="7 6"/>
+    <rect x="1380" y="650" width="180" height="100" rx="14" stroke-dasharray="7 6"/>
+  </g>
+  <rect x="820" y="340" width="290" height="130" rx="14" fill="#e6f3ec" stroke="#1f7a4d" stroke-width="3.5"/>
+
+  <g stroke="#1b1c19" stroke-width="2" fill="none">
+    <line x1="344" y1="405" x2="436" y2="405" marker-end="url(#a)" marker-start="url(#a)"/>
+    <line x1="724" y1="405" x2="816" y2="405" marker-end="url(#a)" marker-start="url(#a)"/>
+    <line x1="1114" y1="405" x2="1206" y2="405" marker-end="url(#a)" marker-start="url(#a)"/>
+    <line x1="1260" y1="650" x2="1260" y2="474" marker-end="url(#a)"/>
+    <line x1="1470" y1="470" x2="1470" y2="646" marker-end="url(#a)"/>
+  </g>
+
+  <g font-size="26" font-weight="700" fill="#1b1c19" text-anchor="middle">
+    <text x="200" y="398">Mail client</text>
+    <text x="580" y="398">TLS proxy</text>
+    <text x="965" y="398" fill="#17603c">IMAP/SMTP bridge</text>
+    <text x="1375" y="398">App backend</text>
+    <text x="1260" y="696" font-size="22">Inbound</text>
+    <text x="1470" y="696" font-size="22">Outbound</text>
+  </g>
+  <g font-size="16" fill="#666a60" text-anchor="middle">
+    <text x="200" y="430">Apple Mail, Thunderbird, Outlook</text>
+    <text x="580" y="430">Fly, Hetzner, your own server</text>
+    <text x="965" y="430" fill="#17603c">stateless, no storage of its own</text>
+    <text x="1375" y="430">HTTP API + database (Convex)</text>
+    <text x="1260" y="726">mail routing</text>
+    <text x="1470" y="726">sending API</text>
+  </g>
+  <g font-size="16" fill="#1b1c19" text-anchor="middle">
+    <text x="390" y="372">IMAP 993</text>
+    <text x="390" y="392">SMTP 465</text>
+    <text x="770" y="372">plaintext,</text>
+    <text x="770" y="392">client IP</text>
+    <text x="1160" y="372">HTTPS,</text>
+    <text x="1160" y="392">JSON</text>
+  </g>
+
+  <g font-size="19" fill="#1b1c19">
+    <text x="60" y="540" font-weight="700">Per-device passwords</text>
+    <text x="60" y="568" fill="#666a60">one per device,</text>
+    <text x="60" y="592" fill="#666a60">individually revocable</text>
+    <text x="440" y="540" font-weight="700">Terminates TLS</text>
+    <text x="440" y="568" fill="#666a60">certificate and ports,</text>
+    <text x="440" y="592" fill="#666a60">nothing else</text>
+    <text x="820" y="540" font-weight="700">Keeps only a mirror in RAM</text>
+    <text x="820" y="568" fill="#666a60">UIDs, flags, sizes.</text>
+    <text x="820" y="592" fill="#666a60">A restart loses nothing.</text>
+  </g>
+  <g font-size="19" fill="#1b1c19">
+    <text x="60" y="700" font-weight="700">One source of truth</text>
+    <text x="60" y="728" fill="#666a60">The web UI and the mail client read the same rows.</text>
+    <text x="60" y="752" fill="#666a60">There is no sync between two systems.</text>
+  </g>
+</svg>

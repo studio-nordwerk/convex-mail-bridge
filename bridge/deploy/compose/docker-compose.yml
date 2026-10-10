@@ -1,0 +1,51 @@
+# The bridge behind HAProxy on a server of your own. An example; see docs/operations.md.
+#
+#   cp .env.example .env        # fill in the three values
+#   mkdir certs                 # certs/mail.pem = certificate chain followed by the private key
+#   docker compose up -d --build
+#
+# HAProxy terminates TLS on 993 and 465 and passes the client address on with a PROXY protocol
+# header. The bridge only accepts that header from the network below, and its mail ports are not
+# published on the host.
+
+services:
+  bridge:
+    build:
+      context: ../..
+    restart: unless-stopped
+    environment:
+      CONVEX_SITE_URL: ${CONVEX_SITE_URL:?set CONVEX_SITE_URL in .env}
+      MAIL_BRIDGE_SECRET: ${MAIL_BRIDGE_SECRET:?set MAIL_BRIDGE_SECRET in .env}
+      SMTP_DOMAIN: ${MAIL_HOST:?set MAIL_HOST in .env}
+      IMAP_ADDR: 0.0.0.0:1143
+      SMTP_ADDR: 0.0.0.0:1465
+      ADMIN_ADDR: 0.0.0.0:8080
+      PROXY_PROTOCOL: required
+      PROXY_TRUSTED_CIDRS: 172.30.0.0/24
+      GOMEMLIMIT: 400MiB
+    mem_limit: 512m
+    ports:
+      # /healthz and /metrics, without authentication: loopback only.
+      - '127.0.0.1:8080:8080'
+    networks:
+      - mail
+
+  proxy:
+    image: haproxy:3.0-alpine
+    restart: unless-stopped
+    depends_on:
+      - bridge
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./certs:/certs:ro
+    ports:
+      - '993:993'
+      - '465:465'
+    networks:
+      - mail
+
+networks:
+  mail:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24

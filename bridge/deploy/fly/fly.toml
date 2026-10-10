@@ -1,0 +1,99 @@
+# Fly.io: the bridge for IMAP (993) and SMTP submission (465).
+#
+# An example. Copy it next to the Dockerfile (`cp deploy/fly/fly.toml fly.toml`), set your app
+# name and host name, and follow docs/operations.md step by step.
+#
+# Secrets do not belong here but in `fly secrets`:
+#   CONVEX_SITE_URL      https://<deployment>.convex.site
+#   MAIL_BRIDGE_SECRET   the same secret as in the environment of the Convex deployment
+
+app = "my-mail-bridge"
+primary_region = "fra"
+
+# SIGTERM: no new connections, open ones get BYE or 421.
+kill_signal = "SIGTERM"
+kill_timeout = 20
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  # Mail ports on IPv4 only (0.0.0.0): reachable for the Fly proxy, not directly over the private
+  # IPv6 network of the organization (6PN). The admin port also listens there ([::]), so that
+  # `fly proxy 8080` shows the metrics.
+  IMAP_ADDR = "0.0.0.0:1143"
+  SMTP_ADDR = "0.0.0.0:1465"
+  ADMIN_ADDR = "[::]:8080"
+  # The proxy puts the client address in front with the PROXY protocol. Connections without a
+  # valid header are rejected.
+  PROXY_PROTOCOL = "required"
+  # Required before you serve mailboxes of other people: after the first deploy, read from
+  # /metrics ("proxyPeers") which network the proxy connects from and enter it here. Until then
+  # the bridge believes the header from anyone who reaches the mail ports and logs a `warning`
+  # with `proxy_peers_untrusted` at every start.
+  # PROXY_TRUSTED_CIDRS = "<network from proxyPeers>"
+  # Name in the SMTP greeting: the public host name.
+  SMTP_DOMAIN = "mail.example.com"
+  # A harmless line in IDLE every 4 minutes (0 = off), see docs/operations.md.
+  IDLE_KEEPALIVE_SECONDS = "240"
+  # Memory: raw cache 64 MiB + messages in flight 128 MiB + mirror (400,000 rows, around 30 MiB)
+  # + runtime. The limit keeps the Go heap below the 512 MB machine.
+  GOMEMLIMIT = "400MiB"
+  # Largest raw message 20 MiB. With the default of 32 MiB, four messages in flight and the
+  # copies of their parts could exceed the limit above.
+  RAW_MAX_BYTES = "20971520"
+
+# IMAP: TLS ends at the proxy (no STARTTLS), plaintext with a PROXY header behind it.
+[[services]]
+  internal_port = 1143
+  protocol = "tcp"
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[services.ports]]
+    port = 993
+    handlers = ["tls", "proxy_proto"]
+
+  # Connections live long (IDLE). Without this the soft limit is 20.
+  [services.concurrency]
+    type = "connections"
+    soft_limit = 800
+    hard_limit = 1000
+
+# SMTP submission: TLS ends at the proxy.
+[[services]]
+  internal_port = 1465
+  protocol = "tcp"
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[services.ports]]
+    port = 465
+    handlers = ["tls", "proxy_proto"]
+
+  [services.concurrency]
+    type = "connections"
+    soft_limit = 150
+    hard_limit = 200
+
+# Health check on the internal HTTP port. Not on the mail ports: a check without a PROXY header
+# would be rejected there. The port has no [[services]] entry and is therefore not reachable from
+# the internet, but it is reachable from the private network of the Fly organization (6PN): every
+# other app of the same organization can read /healthz and /metrics (counters and hashes, no
+# addresses, contents or secrets).
+[checks]
+  [checks.health]
+    type = "http"
+    port = 8080
+    method = "get"
+    path = "/healthz"
+    interval = "15s"
+    timeout = "3s"
+    grace_period = "10s"
+
+# Smallest machine that carries the limits above.
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
