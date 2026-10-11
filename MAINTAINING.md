@@ -26,8 +26,9 @@ After changes were carried over:
 - [x] The example app ran on a local, self-hosted Convex backend with the bridge in front of it;
       `bridge/test/against-edge.sh` and `mbsync` passed (see `docs/limits.md`).
 - [ ] Try one real mail client against the example app, including sending.
-- [ ] Publish 0.1.0 to npm by hand (see below) and remove the note about it from the README.
-- [ ] Run the preflight check of the Convex components directory against the public repository.
+- [ ] Publish 0.1.0 to npm by hand (see below).
+- [x] The preflight check of the Convex components directory passed against the public repository
+      (8 of 8 critical requirements, 6 of 6 suggested improvements).
 
 `SECURITY.md` relies on private vulnerability reporting being enabled in the repository settings.
 

@@ -29,9 +29,6 @@ it, where the probe (`bridge/test/against-edge.sh`) and `mbsync` passed; a real 
 cloud deployment and production load have not been tried against it. Expect breaking changes
 before 1.0.
 
-The package is not on npm yet. Version 0.1.0 follows; until then the install line below does not
-resolve.
-
 What works today: `INBOX` and `Sent`, reading, read and other flags in both directions, delete
 (hidden for mail clients), IDLE (new mail appears within seconds), sending over SMTP, shared
 mailboxes, profile files for Apple devices. Not yet: further folders (archive, trash), moving
