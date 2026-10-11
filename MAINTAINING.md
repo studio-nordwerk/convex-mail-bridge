@@ -27,8 +27,9 @@ After changes were carried over:
       `bridge/test/against-edge.sh` and `mbsync` passed (see `docs/limits.md`).
 - [ ] Try one real mail client against the example app, including sending.
 - [x] 0.1.0 is on npm, published by hand (see below); the tag `v0.1.0` created the GitHub release.
-- [ ] Add this repository and `release.yml` as trusted publisher in the package's settings on
-      npmjs.com, so the next version can be released by tag.
+- [x] This repository and `release.yml` are entered as trusted publisher in the package's settings
+      on npmjs.com (`npm publish` allowed, `npm dist-tag` not). The first release by tag will show
+      whether it works; the workflow's publishing step has not run yet.
 - [x] The preflight check of the Convex components directory passed against the public repository
       (8 of 8 critical requirements, 6 of 6 suggested improvements).
 
