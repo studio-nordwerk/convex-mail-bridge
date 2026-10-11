@@ -26,7 +26,9 @@ After changes were carried over:
 - [x] The example app ran on a local, self-hosted Convex backend with the bridge in front of it;
       `bridge/test/against-edge.sh` and `mbsync` passed (see `docs/limits.md`).
 - [ ] Try one real mail client against the example app, including sending.
-- [ ] Publish 0.1.0 to npm by hand (see below).
+- [x] 0.1.0 is on npm, published by hand (see below); the tag `v0.1.0` created the GitHub release.
+- [ ] Add this repository and `release.yml` as trusted publisher in the package's settings on
+      npmjs.com, so the next version can be released by tag.
 - [x] The preflight check of the Convex components directory passed against the public repository
       (8 of 8 critical requirements, 6 of 6 suggested improvements).
 
