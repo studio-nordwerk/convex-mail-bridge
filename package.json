@@ -64,7 +64,7 @@
     "@edge-runtime/vm": "^5.0.0",
     "@eslint/js": "9.39.5",
     "@types/node": "^24.13.3",
-    "convex": "^1.46.0",
+    "convex": "^1.48.0",
     "convex-test": "0.0.61",
     "eslint": "9.39.5",
     "globals": "^17.9.0",
